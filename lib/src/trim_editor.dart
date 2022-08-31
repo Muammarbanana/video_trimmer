@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -283,9 +284,6 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
             minLengthPixels = _thumbnailViewerW;
           }
 
-          debugPrint('debugVideoTrim $maxLengthPixels');
-          debugPrint('debugVideoTrim $minLengthPixels');
-
           _videoEndPos = fraction != null
               ? _videoDuration.toDouble() * fraction!
               : _videoDuration.toDouble();
@@ -293,7 +291,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
           widget.onChangeEnd!(_videoEndPos);
 
           _endPos = Offset(
-            minLengthPixels != null ? minLengthPixels! : _thumbnailViewerW,
+            maxLengthPixels != null ? maxLengthPixels! : _thumbnailViewerW,
             _thumbnailViewerH,
           );
 
@@ -421,13 +419,12 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
     if (_dragType == EditorDragType.left) {
       if ((_startPos.dx + details.delta.dx >= 0) &&
           (_startPos.dx + details.delta.dx <= _endPos.dx) &&
-          //!(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!) &&
+          !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx < minLengthPixels!)) {
         _startPos += details.delta;
         _onStartDragged();
       } else {
-        debugPrint(
-            'debugVideoTrimConditionLeft ${_endPos.dx} ${_startPos.dx} ${details.delta.dx}');
+        log('debugVideoTrimConditionLeft ${_endPos.dx} ${_startPos.dx} ${details.delta.dx}');
       }
     } else if (_dragType == EditorDragType.center) {
       if ((_startPos.dx + details.delta.dx >= 0) &&
@@ -440,13 +437,12 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
     } else {
       if ((_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
           (_endPos.dx + details.delta.dx >= _startPos.dx) &&
-          //!(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!) &&
+          !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx < minLengthPixels!)) {
         _endPos += details.delta;
         _onEndDragged();
       } else {
-        debugPrint(
-            'debugVideoTrimConditionRight ${_endPos.dx} ${_startPos.dx} ${details.delta.dx}');
+        log('debugVideoTrimConditionRight ${_endPos.dx} ${_startPos.dx} ${details.delta.dx}');
       }
     }
     setState(() {});
