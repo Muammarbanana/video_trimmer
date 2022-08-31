@@ -272,8 +272,8 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
           }
 
           if (widget.minVideoLength > const Duration(milliseconds: 0) &&
-              widget.minVideoLength > totalDuration) {
-            if (widget.minVideoLength > totalDuration) {
+              widget.minVideoLength < totalDuration) {
+            if (widget.minVideoLength < totalDuration) {
               fraction = widget.minVideoLength.inMilliseconds /
                   totalDuration.inMilliseconds;
 
@@ -417,9 +417,8 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
 
     if (_dragType == EditorDragType.left) {
       if ((_startPos.dx + details.delta.dx >= 0) &&
-              (_startPos.dx + details.delta.dx <= _endPos.dx) &&
-              !(_endPos.dx - _startPos.dx - details.delta.dx >
-                  maxLengthPixels!) ||
+          (_startPos.dx + details.delta.dx <= _endPos.dx) &&
+          !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx < minLengthPixels!)) {
         _startPos += details.delta;
         _onStartDragged();
@@ -434,9 +433,8 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
       }
     } else {
       if ((_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
-              (_endPos.dx + details.delta.dx >= _startPos.dx) &&
-              !(_endPos.dx - _startPos.dx + details.delta.dx >
-                  maxLengthPixels!) ||
+          (_endPos.dx + details.delta.dx >= _startPos.dx) &&
+          !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx < minLengthPixels!)) {
         _endPos += details.delta;
         _onEndDragged();
