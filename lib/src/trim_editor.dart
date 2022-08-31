@@ -24,6 +24,9 @@ class TrimEditor extends StatefulWidget {
   /// For defining the maximum length of the output video.
   final Duration maxVideoLength;
 
+  /// For defining the minimum length of the output video.
+  final Duration minVideoLength;
+
   /// For specifying a size to the holder at the
   /// two ends of the video trimmer area, while it is `idle`.
   ///
@@ -177,6 +180,7 @@ class TrimEditor extends StatefulWidget {
     this.viewerHeight = 50,
     this.fit = BoxFit.fitHeight,
     this.maxVideoLength = const Duration(milliseconds: 0),
+    this.minVideoLength = const Duration(milliseconds: 0),
     this.circleSize = 5.0,
     this.borderWidth = 3,
     this.scrubberWidth = 1,
@@ -221,6 +225,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
 
   double? fraction;
   double? maxLengthPixels;
+  double? minLengthPixels;
 
   ThumbnailViewer? thumbnailWidget;
 
@@ -264,6 +269,18 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
             }
           } else {
             maxLengthPixels = _thumbnailViewerW;
+          }
+
+          if (widget.minVideoLength > const Duration(milliseconds: 0) &&
+              widget.minVideoLength > totalDuration) {
+            if (widget.minVideoLength > totalDuration) {
+              fraction = widget.minVideoLength.inMilliseconds /
+                  totalDuration.inMilliseconds;
+
+              minLengthPixels = _thumbnailViewerW * fraction!;
+            }
+          } else {
+            minLengthPixels = _thumbnailViewerW;
           }
 
           _videoEndPos = fraction != null
@@ -401,7 +418,8 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
     if (_dragType == EditorDragType.left) {
       if ((_startPos.dx + details.delta.dx >= 0) &&
           (_startPos.dx + details.delta.dx <= _endPos.dx) &&
-          !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!)) {
+          !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!) &&
+          !(_endPos.dx - _startPos.dx - details.delta.dx < minLengthPixels!)) {
         _startPos += details.delta;
         _onStartDragged();
       }
@@ -416,7 +434,8 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
     } else {
       if ((_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
           (_endPos.dx + details.delta.dx >= _startPos.dx) &&
-          !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!)) {
+          !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!) &&
+          !(_endPos.dx - _startPos.dx + details.delta.dx < minLengthPixels!)) {
         _endPos += details.delta;
         _onEndDragged();
       }
