@@ -290,7 +290,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
           widget.onChangeEnd!(_videoEndPos);
 
           _endPos = Offset(
-            maxLengthPixels != null ? maxLengthPixels! : _thumbnailViewerW,
+            minLengthPixels != null ? minLengthPixels! : _thumbnailViewerW,
             _thumbnailViewerH,
           );
 
