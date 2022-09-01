@@ -260,18 +260,6 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
         setState(() {
           Duration totalDuration = videoPlayerController.value.duration;
 
-          if (widget.maxVideoLength > const Duration(milliseconds: 0) &&
-              widget.maxVideoLength < totalDuration) {
-            if (widget.maxVideoLength < totalDuration) {
-              fraction = widget.maxVideoLength.inMilliseconds /
-                  totalDuration.inMilliseconds;
-
-              maxLengthPixels = _thumbnailViewerW * fraction!;
-            }
-          } else {
-            maxLengthPixels = _thumbnailViewerW;
-          }
-
           if (widget.minVideoLength > const Duration(milliseconds: 0) &&
               widget.minVideoLength < totalDuration) {
             if (widget.minVideoLength < totalDuration) {
@@ -282,6 +270,18 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
             }
           } else {
             minLengthPixels = _thumbnailViewerW;
+          }
+
+          if (widget.maxVideoLength > const Duration(milliseconds: 0) &&
+              widget.maxVideoLength < totalDuration) {
+            if (widget.maxVideoLength < totalDuration) {
+              fraction = widget.maxVideoLength.inMilliseconds /
+                  totalDuration.inMilliseconds;
+
+              maxLengthPixels = _thumbnailViewerW * fraction!;
+            }
+          } else {
+            maxLengthPixels = _thumbnailViewerW;
           }
 
           _videoEndPos = fraction != null
